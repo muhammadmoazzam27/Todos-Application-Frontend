@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import "@/config/global";
+import axios from 'axios';
 
 const { Item } = Form;
 
@@ -9,14 +10,18 @@ const initialState = { fullName: "", email: "", password: "", confirmPassword: "
 
 const Register = () => {
 
+  const VITE_AUTH_API_REGISTER = import.meta.env.VITE_AUTH_API_REGISTER
+
   const [state, setState] = useState(initialState);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setState((preState) => ({ ...preState, [e.target.name]: e.target.value }))
   }
 
-  const handlesubmit = (e) => {
+  const handlesubmit = async (e) => {
 
     e.preventDefault();
 
@@ -37,8 +42,37 @@ const Register = () => {
 
     const user = { fullName, email, password, confirmPassword }
 
-    toastify("user register", "success")
-    console.log("User => ", user)
+    setLoading(true);
+
+    await axios.post(`${VITE_AUTH_API_REGISTER}`, user)
+
+      .then((res) => {
+        const { status, data } = res;
+        if (status === 201) {
+          console.log("User => ", user)
+          toastify(data.message || "user register", "success")
+          navigate("/auth/login");
+          return
+        }
+      })
+      .catch((error) => {
+        const status = error?.response?.status;
+        const message = error?.response?.data?.message;
+        if (status === 400) {
+          return toastify(message || "fill all fields", "error");
+        }
+        if (status === 403) {
+          return toastify(message || "User exist", "error");
+        }
+        if (status === 500) {
+          return toastify(message || "Internal Server error", "error");
+        }
+        console.error("Error : ", error)
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+
 
   }
 
