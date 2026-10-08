@@ -45,7 +45,7 @@ const Navbar = () => {
                             </div>
                             :
                             <div className="hidden md:flex items-center space-x-3">
-                                <Link to="/auth/dashboard" className="px-4 py-2 text-sm font-semibold text-green-700 bg-slate-50 rounded-xl hover:text-green-900 hover:bg-slate-100 transition-all">
+                                <Link to="/dashboard/home-overview" className="px-4 py-2 text-sm font-semibold text-green-700 bg-slate-50 rounded-xl hover:text-green-900 hover:bg-slate-100 transition-all">
                                     Dashboard
                                 </Link>
                                 <button className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-xl shadow-md shadow-blue-500/20 hover:bg-red-700 active:scale-95 transition-all" onClick={handleLogout}>
@@ -93,7 +93,7 @@ const Navbar = () => {
                                         </div>
                                         :
                                         <div className="pt-3 border-t border-slate-100 flex flex-col space-y-2">
-                                            <Link to="/auth/dashboard" className="px-4 py-2 text-sm font-semibold text-green-700 bg-slate-50 rounded-xl hover:text-green-900 hover:bg-slate-100 transition-all">
+                                            <Link to="/dashboard/home-overview" className="px-4 py-2 text-sm font-semibold text-green-700 bg-slate-50 rounded-xl hover:text-green-900 hover:bg-slate-100 transition-all">
                                                 Dashboard
                                             </Link>
                                             <button className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-xl shadow-md shadow-blue-500/20 hover:bg-red-700 active:scale-95 transition-all" onClick={handleLogout}>

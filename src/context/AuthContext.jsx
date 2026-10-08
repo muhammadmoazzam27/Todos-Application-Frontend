@@ -1,13 +1,16 @@
+import { createContext, useContext, useEffect, useReducer } from 'react';
 import { message } from 'antd';
 import axios from 'axios';
-import React, { createContext, useContext, useEffect, useReducer, useState } from 'react'
 
 const Auth = createContext();
 
-const initialState = { isAuth: false, user: {}, isAppLoading: true };
+const initialState = {
+  isAuth: false,
+  user: {},
+  isAppLoading: true
+};
 
 const reducer = (state, action) => {
-
   switch (action.type) {
     case "SET_LOGIN":
       return { ...state, isAuth: true, user: action.payload, isAppLoading: false };
@@ -18,17 +21,14 @@ const reducer = (state, action) => {
     default:
       return state;
   }
-
-}
+};
 
 const AuthContext = ({ children }) => {
-
-  const VITE_AUTH_API_USER = import.meta.env.VITE_AUTH_API_USER
+  const VITE_AUTH_API_USER = import.meta.env.VITE_AUTH_API_USER;
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const readProfile = async (token) => {
-
     const jwt = token || localStorage.getItem("jwt");
 
     if (!jwt) {
@@ -36,37 +36,38 @@ const AuthContext = ({ children }) => {
       return;
     }
 
-    await axios.get(`${VITE_AUTH_API_USER}`, { headers: { Authorization: `Bearer ${jwt}` } })
+    try {
+      const res = await axios.get(`${VITE_AUTH_API_USER}`, {
+        headers: { Authorization: `Bearer ${jwt}` }
+      });
 
-      .then((res) => {
-        const { status, data } = res;
-        if (status === 200) {
-          return dispatch({ type: "SET_LOGIN", payload: data.user })
-        }
-      })
-      .catch((error) => {
-        console.error("Error : ", error)
-      })
-
-
-  }
+      const { status, data } = res;
+      if (status === 200) {
+        dispatch({ type: "SET_LOGIN", payload: data.user });
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      localStorage.removeItem("jwt");
+      dispatch({ type: "SET_LOGOUT" });
+    }
+  };
 
   useEffect(() => {
     readProfile();
-  }, [])
+  }, []);
 
   const handleLogout = () => {
-    dispatch({ type: "SET_LOGOUT", ...state, })
     localStorage.removeItem("jwt");
-    message.success("logout successful");
-  }
+    dispatch({ type: "SET_LOGOUT" });
+    message.success("Logout successful");
+  };
 
   return (
     <Auth.Provider value={{ ...state, readProfile, handleLogout }}>
       {children}
     </Auth.Provider>
-  )
-}
+  );
+};
 
 export default AuthContext;
 
