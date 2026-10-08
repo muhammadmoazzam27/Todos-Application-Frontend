@@ -15,7 +15,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const readProfile = useAuthContext();
+  const { readProfile } = useAuthContext();
 
   const handleChange = (e) => {
     setState((preState) => ({ ...preState, [e.target.name]: e.target.value }))
@@ -34,10 +34,8 @@ const Login = () => {
       .then((res) => {
         const { status, data } = res;
         if (status === 200) {
-          console.log("User => ", user)
-          console.log("Token => ", data.token)
+          readProfile(data.token);
           localStorage.setItem("jwt", data.token)
-          
           toastify(data.message || "user login", "success");
           navigate("/");
           return

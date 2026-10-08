@@ -49,7 +49,6 @@ const Register = () => {
       .then((res) => {
         const { status, data } = res;
         if (status === 201) {
-          console.log("User => ", user)
           toastify(data.message || "user register", "success")
           navigate("/auth/login");
           return
