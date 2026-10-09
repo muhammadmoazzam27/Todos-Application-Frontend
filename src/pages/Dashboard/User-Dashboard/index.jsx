@@ -16,20 +16,52 @@ const UserDashboard = () => {
             key: 'title',
         },
         {
+            title: 'Priority',
+            dataIndex: 'priority',
+            key: 'priority',
+            render: (priority) => (
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${priority === 'High' ? 'bg-green-100 text-green-700' : priority === 'Medium' ? 'bg-sky-100 text-sky-700' : 'bg-red-100 text-red-800'}`}>
+                    {priority}
+                </span>
+            ),
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
             render: (status) => (
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${status === 'Completed' ? 'bg-green-100 text-green-700' : status === 'In Progress' ? 'bg-sky-100 text-sky-700' : 'bg-amber-100 text-amber-700'}`}>                 {status}
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${status === 'Completed' ? 'bg-green-100 text-green-700' : status === 'In Progress' ? 'bg-sky-100 text-sky-700' : 'bg-amber-100 text-amber-700'}`}>
+                    {status}
                 </span>
+            ),
+        },
+        {
+            title: 'Due Date',
+            dataIndex: 'dueDate',
+            key: 'dueDate',
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+        },
+        {
+            title: 'Actions',
+            dataIndex: 'action',
+            key: 'action',
+            render: () => (
+                <Space>
+                    <button className='bg-green-800 text-white font-normal rounded px-3 py-1'>Edit</button>
+                    <button className='bg-red-800 text-white font-normal rounded px-3 py-1'>Delete</button>
+                </Space>
             ),
         },
     ];
 
     const data = [
-        { key: '1', id: 1, title: 'Learn React & Tailwind', status: 'Completed' },
-        { key: '2', id: 2, title: 'Build User Dashboard', status: 'Pending' },
-        { key: '3', id: 3, title: 'Integrate Ant Design Table', status: 'In Progress' },
+        { key: '1', id: 1, title: 'Todo 01', priority: "High", status: 'Completed', dueDate: "2026-10-07", description: "todo 01 description" },
+        { key: '2', id: 2, title: 'Todo 02', priority: "Medium", status: 'In Progress', dueDate: "2026-10-07", description: "todo 02 description" },
+        { key: '3', id: 3, title: 'Todo 03', priority: "Low", status: 'Pending', dueDate: "2026-10-07", description: "todo 03 description" },
     ];
 
     return (

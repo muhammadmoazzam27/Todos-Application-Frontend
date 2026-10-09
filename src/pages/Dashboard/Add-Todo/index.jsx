@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Input, Select, DatePicker, Button } from 'antd';
 import "@/config/global";
+import axios from 'axios';
 
 const { TextArea } = Input;
 const { Item } = Form;
@@ -16,7 +17,10 @@ const initialState = {
 
 const AddTodo = () => {
 
+  const TODO_API = import.meta.env.VITE_TODO_API
+
   const [state, setState] = useState(initialState)
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
 
   const handleChange = (e) => {
@@ -51,11 +55,41 @@ const AddTodo = () => {
 
     const formData = new FormData();
 
-    formData.append("image", image);
+    if (image) {
+      formData.append("image", image);
+    }
 
     for (const [key, value] of Object.entries(todo)) {
       formData.append(key, value)
     }
+
+    setLoading(true);
+
+    const token = localStorage.getItem("jwt");
+
+    axios.post(`${TODO_API}`, formData, { headers: { Authorization: `Bearer ${token}` } })
+
+      .then((res) => {
+        const { status, data } = res;
+        if (status === 201) {
+          return toastify(data.message || "todo created", "success");
+        }
+      })
+      .catch((error) => {
+        const status = error?.response?.status;
+        const message = error?.response?.data?.message;
+        if (status === 400) {
+          return toastify(message || "fill all fields", "error");
+        }
+        if (status === 500) {
+          return toastify(message || "Internal Server error", "error");
+        }
+        console.error("Error : ", error)
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+
 
   }
 
@@ -124,9 +158,6 @@ const AddTodo = () => {
           {/* Upload Image  */}
           <Item
             label={<span className="font-semibold text-slate-700">Upload Image</span>}
-            name="image"
-            valuePropName="file"
-            getValueFromEvent={(e) => e.target.files[0]} // File object ko form state mein save karne ke liye
           >
             <input
               type="file"
@@ -142,6 +173,7 @@ const AddTodo = () => {
               block
               type="primary"
               htmlType="submit"
+              loading={loading}
               className="bg-blue-950 hover:bg-blue-900 font-semibold h-12 text-base rounded-xl shadow-lg transition-all duration-300 transform active:scale-[0.99]"
               onClick={handleSubmit}
             >

@@ -7,27 +7,27 @@ const Navbar = () => {
     const { isAuth, handleLogout } = useAuthContext();
 
     return (
-        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+        <nav className="sticky top-0 z-50 bg-[#1d3557] backdrop-blur-md border-b border-slate-200/80 shadow-xs">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Main Navbar Bar */}
                 <div className="flex items-center justify-between h-16">
 
                     {/* Logo */}
                     <div className="">
-                        <Link to="/" className="text-2xl font-bold text-indigo-600">
+                        <Link to="/" className="text-3xl font-bold text-amber-600">
                             Todo App
                         </Link>
                     </div>
 
                     {/* Desktop Navigation Links */}
                     <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
-                        <Link to="/" className="px-3 py-2 text-sm font-semibold text-slate-600 rounded-lg transition-colors hover:text-blue-600 hover:bg-slate-50">
+                        <Link to="/" className="px-4 py-1 text-md font-semibold text-slate-300 rounded-full transition-colors hover:text-blue-800 hover:bg-slate-400">
                             Home
                         </Link>
-                        <Link to="/about" className="px-3 py-2 text-sm font-semibold text-slate-600 rounded-lg transition-colors hover:text-blue-600 hover:bg-slate-50">
+                        <Link to="/about" className="px-4 py-1 text-md font-semibold text-slate-300 rounded-full transition-colors hover:text-blue-800 hover:bg-slate-400">
                             About
                         </Link>
-                        <Link to="/contact" className="px-3 py-2 text-sm font-semibold text-slate-600 rounded-lg transition-colors hover:text-blue-600 hover:bg-slate-50">
+                        <Link to="/contact" className="px-4 py-1 text-md font-semibold text-slate-300 rounded-full transition-colors hover:text-blue-800 hover:bg-slate-400">
                             Contact
                         </Link>
                     </div>
@@ -36,16 +36,16 @@ const Navbar = () => {
                     {
                         !isAuth ?
                             <div className="hidden md:flex items-center space-x-3">
-                                <Link to="/auth/login" className="px-4 py-2 text-sm font-semibold text-slate-700 rounded-xl hover:text-blue-600 hover:bg-slate-100 transition-all">
+                                <Link to="/auth/login" className="px-4 py-2 text-md font-semibold text-slate-100 rounded-xl hover:text-blue-600 hover:bg-slate-200 transition-all">
                                     Login
                                 </Link>
-                                <Link to="/auth/register" className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-xl shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-95 transition-all">
+                                <Link to="/auth/register" className="px-4 py-2 text-md font-semibold text-white bg-blue-600 rounded-xl shadow-md shadow-white-500/20 hover:bg-blue-700 active:scale-95 transition-all">
                                     Register
                                 </Link>
                             </div>
                             :
                             <div className="hidden md:flex items-center space-x-3">
-                                <Link to="/dashboard/home-overview" className="px-4 py-2 text-sm font-semibold text-green-700 bg-slate-50 rounded-xl hover:text-green-900 hover:bg-slate-100 transition-all">
+                                <Link to="/dashboard/home-overview" className="px-4 py-2 text-sm font-semibold text-green-700 bg-slate-100 rounded-xl hover:text-green-900 hover:bg-slate-100 transition-all">
                                     Dashboard
                                 </Link>
                                 <button className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-xl shadow-md shadow-blue-500/20 hover:bg-red-700 active:scale-95 transition-all" onClick={handleLogout}>
@@ -56,11 +56,11 @@ const Navbar = () => {
 
                     {/* Pure CSS Mobile Toggle (Peer Pattern using Hidden Checkbox) */}
                     <div className="flex md:hidden">
-                        <label className="relative cursor-pointer p-2 rounded-lg hover:bg-slate-100">
+                        <label className="relative cursor-pointer px-2 py-1 rounded-lg hover:bg-slate-100">
                             <input type="checkbox" className="peer hidden" id="menu-toggle" />
 
                             {/* Hamburger Icon (Visible when checkbox is unchecked) */}
-                            <svg className="w-6 h-6 text-slate-700 peer-checked:hidden transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-6 h-6 text-slate-100 peer-checked:hidden transition-transform hover:text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
 
@@ -84,7 +84,7 @@ const Navbar = () => {
                                 {
                                     !isAuth ?
                                         <div className="pt-3 border-t border-slate-100 flex flex-col space-y-2">
-                                            <Link to="/auth/login" className="px-4 py-2 text-sm font-semibold text-slate-700 rounded-xl hover:text-blue-600 hover:bg-slate-100 transition-all">
+                                            <Link to="/auth/login" className="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 rounded-xl hover:text-blue-600 hover:bg-slate-200 transition-all">
                                                 Login
                                             </Link>
                                             <Link to="/auth/register" className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-xl shadow-md shadow-blue-500/20 hover:bg-blue-700 active:scale-95 transition-all">

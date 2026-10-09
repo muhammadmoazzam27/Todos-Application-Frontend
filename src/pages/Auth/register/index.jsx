@@ -78,9 +78,9 @@ const Register = () => {
 
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 flex items-center justify-center p-4">
       {/* Registration Card Container */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
+      <div className="w-full max-w-md bg-slate-50 rounded-2xl shadow-lg border border-slate-200 p-5 sm:p-8">
 
         {/* Header */}
         <div className="text-center mb-6">
