@@ -1,14 +1,69 @@
-import { Space, Table, Button } from 'antd'
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import { Image, Space, Table, Modal } from 'antd'
+import axios from 'axios';
 
 const UserDashboard = () => {
 
+    const GET_ALL_TODOS = import.meta.env.VITE_GET_ALL_TODO_API
+
+    const [todos, setTodos] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+
+    // -------- Fetch All Todos --------- //
+
+    const getAllTodos = () => {
+
+        setLoading(true);
+
+        const token = localStorage.getItem("jwt");
+
+        axios.get(`${GET_ALL_TODOS}`, { headers: { Authorization: `Bearer ${token}` } })
+
+            .then((res) => {
+                const { status, data } = res;
+                if (status === 200) {
+                    console.log("All Todos : ", data.allTodos)
+                    setTodos(data.allTodos);
+                }
+            })
+            .catch((error => {
+                console.error("Error : ", error);
+            }))
+            .finally(() => {
+                setLoading(false)
+            })
+
+    }
+
+    useEffect(() => {
+        getAllTodos();
+    }, [])
+
+
+    // ------ Todo Delete Function ------- //
+
+    const handleDelete = (todo) => {
+        console.log("Delete Todo : ", todo)
+    }
+
+    // ------ Todo Edit Function ------- //
+
+    const handleEdit = (todo) => {
+        console.log("Edit Todo : ", todo)
+    }
+
+
+    // ---------- Ant Design Table Column --------- //
+
     const columns = [
+
         {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
+            title: 'Image',
+            dataIndex: 'imageURL',
+            render: (imageURL) => imageURL ? <Image style={{ width: 50, height: 40, borderRadius: 4 }} src={imageURL} /> : <Text>No Image</Text>,
+            key: 'imageURL',
         },
         {
             title: 'Title',
@@ -47,22 +102,61 @@ const UserDashboard = () => {
         },
         {
             title: 'Actions',
-            dataIndex: 'action',
-            key: 'action',
-            render: () => (
+            dataIndex: 'actions',
+            key: 'actions',
+            render: (_, record) => (
                 <Space>
-                    <button className='bg-green-800 text-white font-normal rounded px-3 py-1'>Edit</button>
-                    <button className='bg-red-800 text-white font-normal rounded px-3 py-1'>Delete</button>
+                    <button
+                        className='bg-green-800 text-white font-normal rounded px-3 py-1'
+                        onClick={() => handleEditClick(record)} // <-- Yahan record pass kiya
+                    >
+                        Edit
+                    </button>
+                    <button
+                        className='bg-red-800 text-white font-normal rounded px-3 py-1'
+                        onClick={() => handleDelete(record)}
+                    >
+                        Delete
+                    </button>
                 </Space>
             ),
         },
     ];
 
-    const data = [
-        { key: '1', id: 1, title: 'Todo 01', priority: "High", status: 'Completed', dueDate: "2026-10-07", description: "todo 01 description" },
-        { key: '2', id: 2, title: 'Todo 02', priority: "Medium", status: 'In Progress', dueDate: "2026-10-07", description: "todo 02 description" },
-        { key: '3', id: 3, title: 'Todo 03', priority: "Low", status: 'Pending', dueDate: "2026-10-07", description: "todo 03 description" },
-    ];
+
+    // --------- Ant Design Modal --------- //
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentTodo, setCurrentTodo] = useState({
+        title: '',
+        description: '',
+        priority: '',
+        status: '',
+        dueDate: '',
+        imageURL: ''
+    });
+
+    // Jab user Edit button dabaye
+    const handleEditClick = (record) => {
+        setCurrentTodo(record); // Us todo ka data state mein daal dein
+        setIsModalOpen(true);   // Modal khol dein
+    };
+
+    // Input fields change hone par state update karne ke liye
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setCurrentTodo({ ...currentTodo, [name]: value });
+    };
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
 
     return (
         <div className="min-h-screen flex flex-col bg-slate-50">
@@ -87,25 +181,25 @@ const UserDashboard = () => {
                     {/* Total Todos Card */}
                     <div className='p-5 bg-white text-slate-800 text-center border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1'>
                         <h1 className='font-semibold text-slate-500 text-sm sm:text-base uppercase tracking-wider mb-1'>Total Todos</h1>
-                        <h1 className='text-3xl sm:text-4xl font-extrabold text-[#1a3254]'>20</h1>
+                        <h1 className='text-3xl sm:text-4xl font-extrabold text-[#1a3254]'>{todos.length}</h1>
                     </div>
 
                     {/* Pending Card */}
                     <div className='p-5 bg-white text-slate-800 text-center border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1'>
                         <h1 className='font-semibold text-amber-600 text-sm sm:text-base uppercase tracking-wider mb-1'>Pending</h1>
-                        <h1 className='text-3xl sm:text-4xl font-extrabold text-amber-600'>5</h1>
+                        <h1 className='text-3xl sm:text-4xl font-extrabold text-amber-600'>0</h1>
                     </div>
 
                     {/* In-Progress Card */}
                     <div className='p-5 bg-white text-slate-800 text-center border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1'>
                         <h1 className='font-semibold text-sky-600 text-sm sm:text-base uppercase tracking-wider mb-1'>In Progress</h1>
-                        <h1 className='text-3xl sm:text-4xl font-extrabold text-sky-600'>5</h1>
+                        <h1 className='text-3xl sm:text-4xl font-extrabold text-sky-600'>0</h1>
                     </div>
 
                     {/* Completed Card */}
                     <div className='p-5 bg-white text-slate-800 text-center border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1'>
                         <h1 className='font-semibold text-emerald-600 text-sm sm:text-base uppercase tracking-wider mb-1'>Completed</h1>
-                        <h1 className='text-3xl sm:text-4xl font-extrabold text-emerald-600'>10</h1>
+                        <h1 className='text-3xl sm:text-4xl font-extrabold text-emerald-600'>0</h1>
                     </div>
 
                 </div>
@@ -121,12 +215,79 @@ const UserDashboard = () => {
                 {/* Ant Design Table container with horizontal scroll for responsiveness */}
                 <div className='bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden p-3 sm:p-4'>
                     <Table
-                        dataSource={data}
+                        rowKey="id"
                         columns={columns}
+                        dataSource={todos}
+                        loading={loading}
                         pagination={{ pageSize: 5 }}
                         scroll={{ x: 'max-content' }}
                     />
                 </div>
+
+                {/* Ant Desgin Edit Modal  */}
+                <Modal
+                    title="Edit Todo"
+                    open={isModalOpen}
+                    onOk={handleOk} // Yahan aap apni update API ki call likhenge
+                    onCancel={() => setIsModalOpen(false)}
+                    okText="Update"
+                >
+                    <div className="flex flex-col gap-4 py-3">
+                        {/* Title Input */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm font-medium text-slate-700">Title</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={currentTodo.title}
+                                onChange={handleInputChange}
+                                className="border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500"
+                            />
+                        </div>
+
+                        {/* Description Input */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm font-medium text-slate-700">Description</label>
+                            <textarea
+                                name="description"
+                                value={currentTodo.description}
+                                onChange={handleInputChange}
+                                className="border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500"
+                                rows="3"
+                            />
+                        </div>
+
+                        {/* Priority Select */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm font-medium text-slate-700">Priority</label>
+                            <select
+                                name="priority"
+                                value={currentTodo.priority}
+                                onChange={handleInputChange}
+                                className="border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500"
+                            >
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+
+                        {/* Status Select */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm font-medium text-slate-700">Status</label>
+                            <select
+                                name="status"
+                                value={currentTodo.status}
+                                onChange={handleInputChange}
+                                className="border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500"
+                            >
+                                <option value="Completed">Completed</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                    </div>
+                </Modal>
 
             </main>
 

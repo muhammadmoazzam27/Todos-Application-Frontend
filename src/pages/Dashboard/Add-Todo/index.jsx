@@ -17,7 +17,7 @@ const initialState = {
 
 const AddTodo = () => {
 
-  const TODO_API = import.meta.env.VITE_TODO_API
+  const ADD_TODO_API = import.meta.env.VITE_ADD_TODO_API
 
   const [state, setState] = useState(initialState)
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ const AddTodo = () => {
 
     const token = localStorage.getItem("jwt");
 
-    axios.post(`${TODO_API}`, formData, { headers: { Authorization: `Bearer ${token}` } })
+    axios.post(`${ADD_TODO_API}`, formData, { headers: { Authorization: `Bearer ${token}` } })
 
       .then((res) => {
         const { status, data } = res;
@@ -161,6 +161,7 @@ const AddTodo = () => {
           >
             <input
               type="file"
+              accept="image/*"
               className="w-full text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-800 hover:file:bg-blue-100 cursor-pointer border border-slate-300 rounded-xl bg-white"
               onChange={handleImageChange}
             />
