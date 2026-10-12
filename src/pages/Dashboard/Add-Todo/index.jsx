@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Select, DatePicker, Button } from 'antd';
 import "@/config/global";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;
 const { Item } = Form;
@@ -22,6 +23,8 @@ const AddTodo = () => {
   const [state, setState] = useState(initialState)
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setState((preState) => ({ ...preState, [e.target.name]: e.target.value }))
@@ -72,6 +75,7 @@ const AddTodo = () => {
       .then((res) => {
         const { status, data } = res;
         if (status === 201) {
+          navigate("/dashboard/home-overview");
           return toastify(data.message || "todo created", "success");
         }
       })
