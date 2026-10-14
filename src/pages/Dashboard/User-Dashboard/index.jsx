@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { Image, Space, Table, Modal, Form, Input, Select, message } from 'antd'
 import axios from 'axios';
+import { useAuthContext } from '@/context/AuthContext';
 
 const { Item } = Form;
 const { Option } = Select;
@@ -9,9 +10,19 @@ const { Option } = Select;
 const UserDashboard = () => {
 
     const GET_ALL_TODOS = import.meta.env.VITE_GET_ALL_TODO_API
+    const EDIT_TODO_API = import.meta.env.VITE_EDIT_TODO_API
+
+    const {user} = useAuthContext();
 
     const [todos, setTodos] = useState([]);
     const [loading, setLoading] = useState(false);
+
+
+    const initialState = { id: '', title: '', description: '', priority: '', status: '', dueDate: '' };
+
+    const [editTodo, setEditTodo] = useState(initialState);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // -------- Fetch All Todos --------- //
     const getAllTodos = () => {
@@ -62,7 +73,7 @@ const UserDashboard = () => {
             dataIndex: 'priority',
             key: 'priority',
             render: (priority) => (
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${priority === 'High' ? 'bg-red-100 text-red-700' : priority === 'Medium' ? 'bg-sky-100 text-sky-700' : 'bg-green-100 text-green-700'}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${priority === 'High' ? 'bg-green-100 text-green-700' : priority === 'Medium' ? 'bg-sky-100 text-sky-700' : 'bg-red-100 text-red-700'}`}>
                     {priority}
                 </span>
             ),
@@ -111,12 +122,6 @@ const UserDashboard = () => {
 
     // --------- Ant Design Modal & Edit State --------- //
 
-    const initialState = { id: '', title: '', description: '', priority: '', status: '', dueDate: '' };
-
-    const [editTodo, setEditTodo] = useState(initialState);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
     // Edit click par record ki sari values set honi chahiyein
     const handleEdit = (record) => {
         setEditTodo({
@@ -138,12 +143,15 @@ const UserDashboard = () => {
 
     // Submit Updated Todo API Call
     const handleEditTodo = async () => {
+
         setIsSubmitting(true);
+
         const token = localStorage.getItem("jwt");
 
         try {
+
             const res = await axios.patch(
-                `http://localhost:8000/api/user/todo/update/single/todo`,
+                `${EDIT_TODO_API}`,
                 editTodo,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -152,7 +160,7 @@ const UserDashboard = () => {
             if (status === 200) {
                 message.success(data.message || "Todo updated successfully");
                 setIsModalOpen(false);
-                getAllTodos(); // Refresh list
+                getAllTodos();
             }
         } catch (error) {
             console.error("Error : ", error);
@@ -176,7 +184,7 @@ const UserDashboard = () => {
                 <div className='flex items-center'>
                     <Space size="middle">
                         <span className='inline-block bg-gradient-to-tr from-blue-400 to-indigo-500 border-2 border-white rounded-full w-9 h-9 sm:w-10 sm:h-10 shadow-inner'></span>
-                        <span className='text-white text-sm sm:text-base font-medium hidden sm:inline'>user@gmail.com</span>
+                        <span className='text-white text-sm sm:text-base font-medium hidden sm:inline'>{user.email}</span>
                     </Space>
                 </div>
             </header>
@@ -228,7 +236,7 @@ const UserDashboard = () => {
                 <Modal
                     style={{ top: 20, bottom: 20 }}
                     styles={{ body: { maxHeight: 'calc(100vh - 200px)', overflowY: 'auto', paddingRight: '4px' } }}
-                    title={<div style={{ textAlign: 'center', width: '100%', fontSize: "20px", fontWeight: "700", padding: "8px" }}>Update Product</div>}
+                    title={<div style={{ textAlign: 'center', width: '100%', fontSize: "20px", fontWeight: "700", padding: "8px" }}>Update Todo</div>}
                     open={isModalOpen}
                     onOk={handleEditTodo}
                     onCancel={() => setIsModalOpen(false)}
@@ -258,7 +266,7 @@ const UserDashboard = () => {
                                     placeholder="Select priority"
                                     className="w-full"
                                     size="large"
-                                    value={editTodo.priority || undefined}
+                                    value={editTodo.priority || ""}
                                     onChange={(priority) => setEditTodo((s) => ({ ...s, priority }))}
                                 >
                                     <Option value="Low">Low</Option>
@@ -272,7 +280,7 @@ const UserDashboard = () => {
                                     placeholder="Select status"
                                     className="w-full"
                                     size="large"
-                                    value={editTodo.status || undefined}
+                                    value={editTodo.status || ""}
                                     onChange={(status) => setEditTodo((s) => ({ ...s, status }))}
                                 >
                                     <Option value="Pending">Pending</Option>
