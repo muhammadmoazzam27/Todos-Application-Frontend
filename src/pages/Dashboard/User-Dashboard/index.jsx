@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-import { Image, Space, Table, Modal, Form, Input, Select, message } from 'antd'
-import axios from 'axios';
+import { Image, Space, Table, Modal, Form, Input, Select } from 'antd';
 import { useAuthContext } from '@/context/AuthContext';
+import "@/config/global";
+import axios from 'axios';
+
 
 const { Item } = Form;
 const { Option } = Select;
@@ -11,8 +13,9 @@ const UserDashboard = () => {
 
     const GET_ALL_TODOS = import.meta.env.VITE_GET_ALL_TODO_API
     const EDIT_TODO_API = import.meta.env.VITE_EDIT_TODO_API
+    const DELETE_TODO_API = import.meta.env.VITE_DELETE_TODO_API
 
-    const {user} = useAuthContext();
+    const { user } = useAuthContext();
 
     const [todos, setTodos] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -24,10 +27,17 @@ const UserDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // -------- Fetch All Todos --------- //
+    // Input fields change handler
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditTodo((s) => ({ ...s, [name]: value }));
+    };
+
+    const token = localStorage.getItem("jwt");
+
+    // -------- GET All Todos --------- //
     const getAllTodos = () => {
         setLoading(true);
-        const token = localStorage.getItem("jwt");
 
         axios.get(`${GET_ALL_TODOS}`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
@@ -38,7 +48,7 @@ const UserDashboard = () => {
             })
             .catch((error => {
                 console.error("Error : ", error);
-                message.error("Failed to fetch todos");
+                toastify("Get all todos", "error");
             }))
             .finally(() => {
                 setLoading(false);
@@ -49,10 +59,77 @@ const UserDashboard = () => {
         getAllTodos();
     }, []);
 
+    // ------- Get Todo data on the click edit button ------- //
+    const handleEdit = (record) => {
+        setEditTodo({
+            id: record.id || record._id,
+            title: record.title || '',
+            description: record.description || '',
+            priority: record.priority || '',
+            status: record.status || '',
+            dueDate: record.dueDate || ''
+        });
+        setIsModalOpen(true);
+    };
+
+    // ------ Todo Edit Function ------- //
+    const handleEditTodo = async () => {
+
+        setIsSubmitting(true);
+
+        try {
+
+            const res = await axios.patch(
+                `${EDIT_TODO_API}`,
+                editTodo,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const { status, data } = res;
+            if (status === 200) {
+                toastify(data.message || "Todo updated successfully", "success");
+                setIsModalOpen(false);
+                getAllTodos();
+            }
+        } catch (error) {
+            console.error("Error : ", error);
+            toastify(error.response?.data?.message || "Failed to update todo", "error");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     // ------ Todo Delete Function ------- //
-    const handleDelete = (todo) => {
-        console.log("Delete Todo : ", todo);
-        // Implement delete API call here
+    const handleDelete = async (record) => {
+
+        setIsSubmitting(true);
+
+        try {
+
+            const todoId = record.id;
+            const res = await axios.delete(`${DELETE_TODO_API}/${todoId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const { status, data } = res;
+            if (status === 200 && !data.isError) {
+                toastify(data.message || "Todo deleted", "success");
+
+                const filterTodo = todos.filter((todo) => {
+                    const currentId = todo.id;
+                    return currentId !== todoId;
+                });
+                setTodos(filterTodo);
+                console.log("Delete Todo : ", record);
+            }
+        }
+        catch (error) {
+            toastify(error.response?.data?.message || "Todo not deleted", "error");
+            console.error("Error : ", error);
+        }
+        finally {
+            setIsSubmitting(false);
+        }
     }
 
     // ---------- Ant Design Table Column --------- //
@@ -62,6 +139,12 @@ const UserDashboard = () => {
             dataIndex: 'imageURL',
             render: (imageURL) => imageURL ? <Image style={{ width: 50, height: 40, borderRadius: 4 }} src={imageURL} /> : <span className="text-slate-400 text-xs">No Image</span>,
             key: 'imageURL',
+        },
+        {
+            title: 'Todo ID',
+            dataIndex: 'id',
+            render : (id)=> <span> {id} </span> ,
+            key: 'id',
         },
         {
             title: 'Title',
@@ -120,55 +203,7 @@ const UserDashboard = () => {
         },
     ];
 
-    // --------- Ant Design Modal & Edit State --------- //
 
-    // Edit click par record ki sari values set honi chahiyein
-    const handleEdit = (record) => {
-        setEditTodo({
-            id: record.id || record._id,
-            title: record.title || '',
-            description: record.description || '',
-            priority: record.priority || '',
-            status: record.status || '',
-            dueDate: record.dueDate || ''
-        });
-        setIsModalOpen(true);
-    };
-
-    // Input fields change handler
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setEditTodo((prev) => ({ ...prev, [name]: value }));
-    };
-
-    // Submit Updated Todo API Call
-    const handleEditTodo = async () => {
-
-        setIsSubmitting(true);
-
-        const token = localStorage.getItem("jwt");
-
-        try {
-
-            const res = await axios.patch(
-                `${EDIT_TODO_API}`,
-                editTodo,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            const { status, data } = res;
-            if (status === 200) {
-                message.success(data.message || "Todo updated successfully");
-                setIsModalOpen(false);
-                getAllTodos();
-            }
-        } catch (error) {
-            console.error("Error : ", error);
-            message.error(error.response?.data?.message || "Failed to update todo");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
 
     // Dynamic Counts Calculation
     const pendingCount = todos.filter(t => t.status === 'Pending').length;
