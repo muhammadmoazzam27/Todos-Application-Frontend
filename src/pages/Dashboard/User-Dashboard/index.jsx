@@ -119,8 +119,9 @@ const UserDashboard = () => {
                     const currentId = todo.id;
                     return currentId !== todoId;
                 });
+
                 setTodos(filterTodo);
-                console.log("Delete Todo : ", record);
+
             }
         }
         catch (error) {
@@ -139,12 +140,6 @@ const UserDashboard = () => {
             dataIndex: 'imageURL',
             render: (imageURL) => imageURL ? <Image style={{ width: 50, height: 40, borderRadius: 4 }} src={imageURL} /> : <span className="text-slate-400 text-xs">No Image</span>,
             key: 'imageURL',
-        },
-        {
-            title: 'Todo ID',
-            dataIndex: 'id',
-            render : (id)=> <span> {id} </span> ,
-            key: 'id',
         },
         {
             title: 'Title',
@@ -214,12 +209,40 @@ const UserDashboard = () => {
         <div className="min-h-screen flex flex-col bg-slate-50">
 
             {/* Header */}
-            <header className='py-3 px-4 sm:px-6 bg-[#1a3254] flex justify-between items-center shadow-md'>
-                <h1 className='text-lg sm:text-2xl font-bold text-white mb-0 tracking-wide'>User Dashboard</h1>
-                <div className='flex items-center'>
-                    <Space size="middle">
-                        <span className='inline-block bg-gradient-to-tr from-blue-400 to-indigo-500 border-2 border-white rounded-full w-9 h-9 sm:w-10 sm:h-10 shadow-inner'></span>
-                        <span className='text-white text-sm sm:text-base font-medium hidden sm:inline'>{user.email}</span>
+            <header className='py-3 px-4 sm:px-6 lg:px-8 bg-[#1a3254] flex justify-between items-center shadow-md gap-2 sm:gap-4'>
+                {/* Left: Button */}
+                <div className='flex-shrink-0'>
+                    <Link
+                        className='group bg-[#8c51d3] hover:bg-[#5d36a7] text-white py-1.5 px-3 sm:py-2 sm:px-5 text-sm sm:text-base font-medium rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 whitespace-nowrap'
+                        to="/"
+                    >
+                        {/* Back Arrow SVG with hover effect */}
+                        <svg
+                            className="w-4 h-4 sm:w-5 sm:h-5 text-white transform group-hover:-translate-x-1 transition-transform duration-200"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        <span>Home Page</span>
+                    </Link>
+                </div>
+
+                {/* Center: Title */}
+
+                <h1 className='text-base sm:text-xl md:text-2xl font-bold text-white mb-0 tracking-wide text-center truncate px-2'>
+                    User Dashboard
+                </h1>
+
+                {/* Right: Profile Info */}
+                <div className='flex-shrink-0 flex items-center'>
+                    <Space size={{ xs: 'small', sm: 'middle' }}>
+                        <span className='inline-block bg-gradient-to-tr from-blue-400 to-indigo-500 border-2 border-white rounded-full w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 mx-1 shadow-inner flex-shrink-0'></span>
+                        <span className='text-white text-xs sm:text-sm md:text-base font-medium hidden sm:inline max-w-[120px] md:max-w-[200px] truncate'>
+                            {user?.email}
+                        </span>
                     </Space>
                 </div>
             </header>
