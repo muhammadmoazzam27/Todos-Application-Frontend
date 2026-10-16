@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Select, DatePicker, Button } from 'antd';
 import "@/config/global";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;
 const { Item } = Form;
@@ -98,15 +98,15 @@ const AddTodo = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="max-w-2xl w-full bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/20 my-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 flex items-center justify-center p-3 sm:p-6 lg:p-8">
+      <div className="max-w-2xl w-full bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-2xl border border-white/20 my-2">
 
         {/* Header Title */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
-            Add New Todo
+            Add New Todo Task
           </h2>
-          <p className="text-slate-500 text-sm mt-1">Fill in the details below to create a new task</p>
+          <p className="text-slate-500 text-sm">Fill in the details below to create a new task</p>
         </div>
 
         <Form layout="vertical" className="w-full">
@@ -166,13 +166,13 @@ const AddTodo = () => {
             <input
               type="file"
               accept="image/*"
-              className="w-full text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-800 hover:file:bg-blue-100 cursor-pointer border border-slate-300 rounded-xl bg-white"
+              className="w-full text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-900 hover:file:bg-blue-100 cursor-pointer border border-slate-300 rounded-xl bg-white"
               onChange={handleImageChange}
             />
           </Item>
 
           {/* Submit Button */}
-          <Item className="mb-0 pt-4">
+          <Item className="mb-0 pt-3">
             <Button
               size="large"
               block
@@ -182,9 +182,10 @@ const AddTodo = () => {
               className="bg-blue-950 hover:bg-blue-900 font-semibold h-12 text-base rounded-xl shadow-lg transition-all duration-300 transform active:scale-[0.99]"
               onClick={handleSubmit}
             >
-              Save Todo
+              Save New Todo Task
             </Button>
           </Item>
+          <p className='text-center font-semibold mb-0'>Back to Dashboard? <Link to="/dashboard/home-overview">All Todos</Link> </p>
         </Form>
       </div>
     </div>
