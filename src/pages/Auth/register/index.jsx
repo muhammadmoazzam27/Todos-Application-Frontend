@@ -10,7 +10,7 @@ const initialState = { fullName: "", email: "", password: "", confirmPassword: "
 
 const Register = () => {
 
-  const VITE_AUTH_API_REGISTER = import.meta.env.VITE_AUTH_API_REGISTER
+  const VITE_AUTH_API_REGISTER = import.meta.env.VITE_API_BASE_URL
 
   const [state, setState] = useState(initialState);
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ const Register = () => {
 
     setLoading(true);
 
-    await axios.post(`${VITE_AUTH_API_REGISTER}`, user)
+    await axios.post(`${VITE_AUTH_API_REGISTER}/api/user/auth/register`, user)
 
       .then((res) => {
         const { status, data } = res;
