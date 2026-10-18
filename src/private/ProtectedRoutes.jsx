@@ -14,4 +14,4 @@ const ProtectedRoutes = ({ Component }) => {
 
 }
 
-export default ProtectedRoutes
+export default ProtectedRoutes;
