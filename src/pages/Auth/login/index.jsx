@@ -9,7 +9,7 @@ const initialState = { email: "", password: "" };
 
 const Login = () => {
 
-  const VITE_AUTH_API_LOGIN = import.meta.env.VITE_AUTH_API_LOGIN
+  const VITE_API_URL = import.meta.env.VITE_API_URL
 
   const [state, setState] = useState(initialState);
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ const Login = () => {
 
     setLoading(true);
 
-    await axios.post(`${VITE_AUTH_API_LOGIN}`, user)
+    await axios.post(`${VITE_API_URL}/user/auth/login`, user)
 
       .then((res) => {
         const { status, data } = res;

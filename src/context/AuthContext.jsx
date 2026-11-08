@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useReducer } from 'react';
+import { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import { message } from 'antd';
 import axios from 'axios';
 
@@ -13,44 +13,41 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_LOGIN":
-      return { ...state, isAuth: true, user: action.payload, isAppLoading: false };
+      return { ...state, isAuth: true, user: action.payload };
     case "SET_LOGOUT":
-      return { isAuth: false, user: {}, isAppLoading: false };
-    case "STOP_LOADING":
-      return { ...state, isAppLoading: false };
+      return { isAuth: false, user: {} };
     default:
       return state;
   }
 };
 
 const AuthContext = ({ children }) => {
-  const VITE_AUTH_API_USER = import.meta.env.VITE_AUTH_API_USER;
+
+  const VITE_API_URL = import.meta.env.VITE_API_URL;
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isAppLoading, setIsAppLoading] = useState(true)
 
   const readProfile = async (token) => {
-    const jwt = token || localStorage.getItem("jwt");
 
-    if (!jwt) {
-      dispatch({ type: "STOP_LOADING" });
-      return;
-    }
+    const jwt = token || localStorage.getItem("jwt")
 
-    try {
-      const res = await axios.get(`${VITE_AUTH_API_USER}`, {
-        headers: { Authorization: `Bearer ${jwt}` }
-      });
+    axios.get(`${VITE_API_URL}/user/auth/user`, { headers: { Authorization: `Bearer ${jwt}` } })
 
-      const { status, data } = res;
-      if (status === 200) {
-        dispatch({ type: "SET_LOGIN", payload: data.user });
-      }
-    } catch (error) {
-      console.error("Authentication error:", error);
-      localStorage.removeItem("jwt");
-      dispatch({ type: "SET_LOGOUT" });
-    }
-  };
+      .then((res) => {
+        const { status, data } = res;
+        if (status === 200) {
+          dispatch({ type: "SET_LOGIN", payload: data.user });
+        }
+      })
+      .catch((error) => {
+        console.error("Error => ", error)
+      })
+      .finally(() => {
+        setIsAppLoading(false)
+      })
+
+  }
 
   useEffect(() => {
     readProfile();
@@ -61,9 +58,8 @@ const AuthContext = ({ children }) => {
     dispatch({ type: "SET_LOGOUT" });
     message.success("Logout successful");
   };
-
   return (
-    <Auth.Provider value={{ ...state, readProfile, handleLogout }}>
+    <Auth.Provider value={{ ...state, readProfile, handleLogout, isAppLoading }}>
       {children}
     </Auth.Provider>
   );

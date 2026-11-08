@@ -18,7 +18,7 @@ const initialState = {
 
 const AddTodo = () => {
 
-  const ADD_TODO_API = import.meta.env.VITE_ADD_TODO_API
+  const VITE_API_URL = import.meta.env.VITE_API_URL
 
   const [state, setState] = useState(initialState)
   const [loading, setLoading] = useState(false);
@@ -70,7 +70,7 @@ const AddTodo = () => {
 
     const token = localStorage.getItem("jwt");
 
-    axios.post(`${ADD_TODO_API}`, formData, { headers: { Authorization: `Bearer ${token}` } })
+    axios.post(`${VITE_API_URL}/user/todo/create`, formData, { headers: { Authorization: `Bearer ${token}` } })
 
       .then((res) => {
         const { status, data } = res;

@@ -22,9 +22,8 @@ const { Option } = Select;
 const initialState = { id: '', title: '', description: '', priority: '', status: '', dueDate: '' };
 
 const UserDashboard = () => {
-    const GET_ALL_TODOS = import.meta.env.VITE_GET_ALL_TODO_API;
-    const EDIT_TODO_API = import.meta.env.VITE_EDIT_TODO_API;
-    const DELETE_TODO_API = import.meta.env.VITE_DELETE_TODO_API;
+
+    const VITE_API_URL = import.meta.env.VITE_API_URL
 
     const { user } = useAuthContext();
 
@@ -47,7 +46,7 @@ const UserDashboard = () => {
     const getAllTodos = () => {
         setLoading(true);
 
-        axios.get(`${GET_ALL_TODOS}`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${VITE_API_URL}/user/todo/get/all/todos`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 const { status, data } = res;
                 if (status === 200) {
@@ -84,7 +83,7 @@ const UserDashboard = () => {
     const handleEditTodo = async () => {
         setIsSubmitting(true);
         try {
-            const res = await axios.patch(`${EDIT_TODO_API}`, editTodo, { headers: { Authorization: `Bearer ${token}` } });
+            const res = await axios.patch(`${VITE_API_URL}/user/todo/edit/single/todo`, editTodo, { headers: { Authorization: `Bearer ${token}` } });
             const { status, data } = res;
             if (status === 200) {
                 toastify(data.message || "Todo updated successfully", "success");
@@ -104,7 +103,7 @@ const UserDashboard = () => {
         setIsSubmitting(true);
         try {
             const todoId = record.id || record._id;
-            const res = await axios.delete(`${DELETE_TODO_API}/${todoId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const res = await axios.delete(`${VITE_API_URL}/user/todo/delete/single/todo/${todoId}`, { headers: { Authorization: `Bearer ${token}` } });
 
             const { status, data } = res;
             if (status === 200 && !data.isError) {
