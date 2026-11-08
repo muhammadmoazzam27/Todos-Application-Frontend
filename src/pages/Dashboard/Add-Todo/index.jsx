@@ -70,7 +70,7 @@ const AddTodo = () => {
 
     const token = localStorage.getItem("jwt");
 
-    axios.post(`${VITE_API_URL}/user/todo/create`, formData, { headers: { Authorization: `Bearer ${token}` } })
+    axios.post(`${VITE_API_URL}/api/user/todo/create`, formData, { headers: { Authorization: `Bearer ${token}` } })
 
       .then((res) => {
         const { status, data } = res;

@@ -32,7 +32,7 @@ const AuthContext = ({ children }) => {
 
     const jwt = token || localStorage.getItem("jwt")
 
-    axios.get(`${VITE_API_URL}/user/auth/user`, { headers: { Authorization: `Bearer ${jwt}` } })
+    axios.get(`${VITE_API_URL}/api/user/auth/user`, { headers: { Authorization: `Bearer ${jwt}` } })
 
       .then((res) => {
         const { status, data } = res;

@@ -29,7 +29,7 @@ const Login = () => {
 
     setLoading(true);
 
-    await axios.post(`${VITE_API_URL}/user/auth/login`, user)
+    await axios.post(`${VITE_API_URL}/api/user/auth/login`, user)
 
       .then((res) => {
         const { status, data } = res;

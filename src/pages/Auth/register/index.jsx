@@ -44,7 +44,7 @@ const Register = () => {
 
     setLoading(true);
 
-    await axios.post(`${VITE_API_URL}/user/auth/register`, user)
+    await axios.post(`${VITE_API_URL}/api/user/auth/register`, user)
 
       .then((res) => {
         const { status, data } = res;
