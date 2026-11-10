@@ -1,16 +1,23 @@
-# React + Vite
+# 🚀 MERN Stack Todo Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack Todo application built using the **MERN** (MongoDB, Express.js, React.js, Node.js) stack with RESTful API integration and user authentication.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+* **User Authentication:** Secure JWT-based registration and login system.
+* **CRUD Operations:** Create, Read, Update, and Delete tasks seamlessly.
+* **User-Specific Tasks:** Each user can only view and manage their own tasks.
+* **Status Toggle:** Mark tasks as completed or pending with real-time updates.
+* **RESTful API:** Node.js & Express backend handling database operations securely.
+* **Responsive UI:** Modern and clean frontend built with React.js.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* **Frontend:** React.js, Context API, Axios, Tailwind CSS
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB, Mongoose ODM
+* **Authentication:** JSON Web Tokens (JWT), Bcrypt.js
